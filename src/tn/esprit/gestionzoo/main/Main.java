@@ -1,46 +1,8 @@
-import java.util.Scanner;
-/*
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+package tn.esprit.gestionzoo.main;
 
-        // Création de l'objet ZooManagement
-        ZooManagement zoo = new ZooManagement();
+import tn.esprit.gestionzoo.entities.Animal;
+import tn.esprit.gestionzoo.entities.Zoo;
 
-        // 🔹 Lecture et validation du nom du zoo
-        String name;
-        do {
-            System.out.print("Entrez le nom du zoo : ");
-            name = sc.nextLine().trim();
-            if (name.isEmpty()) {
-                System.out.println("❌ Le nom ne peut pas être vide !");
-            }
-        } while (name.isEmpty());
-        zoo.zooName = name;
-
-        // 🔹 Lecture et validation du nombre de cages
-        int cages;
-        do {
-            System.out.print("Entrez le nombre de cages (entier positif) : ");
-            while (!sc.hasNextInt()) { // Vérifie que l'entrée est un entier
-                System.out.println("❌ Veuillez entrer un nombre entier !");
-                sc.next(); // ignore la mauvaise saisie
-            }
-            cages = sc.nextInt();
-            if (cages <= 0) {
-                System.out.println("❌ Le nombre de cages doit être positif !");
-            }
-        } while (cages <= 0);
-        zoo.nbrCages = cages;
-
-        sc.close();
-
-        // 🔹 Affichage final
-        zoo.displayInfo();
-    }
-}
-
-*/
 public class Main {
     public static void main(String[] args) {
 
@@ -94,32 +56,32 @@ public class Main {
         for (int i = 1; i <= 5; i++) {
             Animal ai = new Animal("FamX" + i, "AX" + i, 2 + i, true);
             boolean okAddMore = myZoo.addAnimal(ai);
-            System.out.println("Ajout " + ai.name + " (après remplissage) -> " + okAddMore); // false attendu si plein
+            System.out.println("Ajout " + ai.getName() + " (après remplissage) -> " + okAddMore); // getter
         }
+
         Animal toRemove = new Animal("Felidae", "Nala", 0, true); // même nom que celui ajouté
         System.out.println("Suppression de 'Nala' -> " + myZoo.removeAnimal(toRemove)); // true si présente
 
-// Vérifier que 'Nala' n'est plus trouvée
+        // Vérifier que 'Nala' n'est plus trouvée
         System.out.println("Recherche de 'Nala' après suppression -> index = " + myZoo.searchAnimal(toRemove)); // -1 attendu
 
-// Essayer de supprimer un animal absent
+        // Essayer de supprimer un animal absent
         Animal unknown = new Animal("UnknownFam", "Inconnu", 1, true);
         System.out.println("Suppression d'un animal absent -> " + myZoo.removeAnimal(unknown));
         System.out.println("Zoo plein ? " + myZoo.isZooFull());
-// ---- Instruction 16 : comparer deux zoos ----
+
+        // ---- Instruction 16 : comparer deux zoos ----
         Zoo zoo1 = new Zoo("Zoo1", "Tunis");
         Zoo zoo2 = new Zoo("Zoo2", "Sfax");
 
-// Ajouter quelques animaux
+        // Ajouter quelques animaux
         zoo1.addAnimal(new Animal("Felidae", "Simba", 5, true));
         zoo1.addAnimal(new Animal("Equidae", "Marty", 4, true));
 
         zoo2.addAnimal(new Animal("Accipitridae", "Aquila", 3, false));
 
-// Comparer
+        // Comparer
         Zoo bigger = Zoo.comparerZoo(zoo1, zoo2);
-        System.out.println("Le zoo avec le plus d'animaux est : " + bigger.name);
-
+        System.out.println("Le zoo avec le plus d'animaux est : " + bigger.getName()); // getter
     }
-
 }

@@ -1,12 +1,15 @@
+package tn.esprit.gestionzoo.entities;
+
 public class Zoo {
     // ✅ Capacité fixe : un zoo contient max 25 animaux
     public static final int NBR_CAGES = 25;
 
-    Animal[] animals; // taille NBR_CAGES
-    String name;
-    String city;
+    // ✅ Encapsulation (attributs privés)
+    private Animal[] animals; // taille NBR_CAGES
+    private String name;
+    private String city;
 
-    // ✅ Compteur d’animaux (Instruction 10)
+    // ✅ Compteur d’animaux
     private int animalCount = 0;
 
     // ✅ Constructeur par défaut
@@ -14,26 +17,60 @@ public class Zoo {
         this.animals = new Animal[NBR_CAGES];
     }
 
-    // ✅ Constructeur paramétré (plus de nbrCages en paramètre)
+    // ✅ Constructeur paramétré (validation du nom non vide)
     public Zoo(String name, String city) {
-        this.name = name;
-        this.city = city;
+        setName(name);         // valide : non null / non vide
+        setCity(city);
         this.animals = new Animal[NBR_CAGES];
     }
+
+    // ===================== Getters / Setters =====================
+
+    public String getName() {
+        return name;
+    }
+
+    // Instruction 18 : le nom d’un Zoo ne doit pas être vide
+    public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom du zoo ne doit pas être vide.");
+        }
+        this.name = name.trim();
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = (city == null) ? "" : city.trim();
+    }
+
+    public int getAnimalCount() {
+        return animalCount;
+    }
+
+    public Animal[] getAnimals() {
+        return animals;
+    }
+
+    // ===================== Méthodes métier =====================
 
     // ✅ Instruction 12 : refuser doublon + refuser dépassement de capacité
     public boolean addAnimal(Animal animal) {
         if (animal == null) return false;
 
         // 1) refuser si zoo plein
-        if (animalCount >= NBR_CAGES) {
+        if (isZooFull()) {
             return false;
         }
 
-        // 2) refuser doublon (unicité par NOM)
+        // 2) refuser doublon (unicité par NOM) — utiliser getters de Animal
         for (int i = 0; i < animals.length; i++) {
-            if (animals[i] != null && animals[i].name != null && animal.name != null
-                    && animals[i].name.equalsIgnoreCase(animal.name)) {
+            if (animals[i] != null
+                    && animals[i].getName() != null
+                    && animal.getName() != null
+                    && animals[i].getName().equalsIgnoreCase(animal.getName())) {
                 return false; // déjà présent
             }
         }
@@ -73,10 +110,11 @@ public class Zoo {
 
     // ✅ Instruction 11 : rechercher par NOM — retourne l’index ou -1
     public int searchAnimal(Animal animal) {
-        if (animal == null || animal.name == null) return -1;
+        if (animal == null || animal.getName() == null) return -1;
 
         for (int i = 0; i < animals.length; i++) {
-            if (animals[i] != null && animal.name.equalsIgnoreCase(animals[i].name)) {
+            if (animals[i] != null
+                    && animal.getName().equalsIgnoreCase(animals[i].getName())) {
                 return i; // trouvé → on retourne l'index
             }
         }
@@ -103,6 +141,7 @@ public class Zoo {
     public boolean isZooFull() {
         return animalCount >= NBR_CAGES;
     }
+
     public static Zoo comparerZoo(Zoo z1, Zoo z2) {
         if (z1 == null) return z2;
         if (z2 == null) return z1;
