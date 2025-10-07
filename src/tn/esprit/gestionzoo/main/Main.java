@@ -1,5 +1,8 @@
 package tn.esprit.gestionzoo.main;
-
+import tn.esprit.gestionzoo.entities.Aquatic;
+import tn.esprit.gestionzoo.entities.Dolphin;
+import tn.esprit.gestionzoo.entities.Penguin;
+import tn.esprit.gestionzoo.entities.Terrestrial;
 import tn.esprit.gestionzoo.entities.Animal;
 import tn.esprit.gestionzoo.entities.Zoo;
 
@@ -82,6 +85,27 @@ public class Main {
 
         // Comparer
         Zoo bigger = Zoo.comparerZoo(zoo1, zoo2);
-        System.out.println("Le zoo avec le plus d'animaux est : " + bigger.getName()); // getter
+        System.out.println("Le zoo avec le plus d'animaux est : " + bigger.getName());// getter
+
+        // Constructeurs par défaut
+        Aquatic aq = new Aquatic();
+        Dolphin d = new Dolphin();
+        Penguin p = new Penguin();
+
+        // Constructeurs paramétrés
+        Dolphin d2 = new Dolphin("Delphinidae", "Flipper", 8, true, "Océan", 25.5f);
+        Penguin p2 = new Penguin("Spheniscidae", "Pingu", 4, false, "Antarctique", 12.3f);
+        Aquatic aq2 = new Aquatic("Poissons", "Poisson Rouge", 2, false, "Aquarium");
+
+        // Affichage (toString redéfini)
+        System.out.println(d2);
+        System.out.println(p2);
+        System.out.println(aq2);
+
+        // Test du polymorphisme (swim)
+        aq2.swim();
+        d2.swim();
+        p2.swim(); // hérite de Aquatic.swim()
+
     }
 }
