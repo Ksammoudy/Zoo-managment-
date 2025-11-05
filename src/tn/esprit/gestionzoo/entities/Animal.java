@@ -13,11 +13,11 @@ public class Animal {
     public Animal(String family, String name, int age, boolean isMammal) {
         this.family = family;
         this.name = name;
-        setAge(age); // utilise le setter pour valider
+        this.age = age; // ✅ plus de vérification ici
         this.isMammal = isMammal;
     }
 
-    // Getters et Setters avec validation
+    // Getters et Setters
     public String getFamily() {
         return family;
     }
@@ -39,9 +39,7 @@ public class Animal {
     }
 
     public void setAge(int age) {
-        if (age < 0) {
-            throw new IllegalArgumentException("L'âge d'un animal ne peut pas être négatif.");
-        }
+        // ❌ on ne lève plus IllegalArgumentException ici
         this.age = age;
     }
 

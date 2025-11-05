@@ -6,9 +6,25 @@ import tn.esprit.gestionzoo.entities.Penguin;
 import tn.esprit.gestionzoo.entities.Animal;
 import tn.esprit.gestionzoo.entities.Zoo;
 
-public class Main {
-    public static void main(String[] args) {
+// ⚠️ Adaptez ce package si besoin
+import tn.esprit.gestionzoo.exceptions.ZooFullException;
+import tn.esprit.gestionzoo.exceptions.InvalidAgeException;
 
+public class Main {
+
+    // Méthode utilitaire : tente l’ajout, gère les exceptions et affiche le compteur
+    private static void addAndReport(Zoo zoo, Animal animal) {
+        try {
+            zoo.addAnimal(animal);
+            System.out.println("Ajout réussi : " + animal.getName());
+        } catch (ZooFullException | InvalidAgeException e) {
+            System.out.println("Erreur à l’ajout de " + animal.getName() + " : " + e.getMessage());
+        } finally {
+            System.out.println("Nombre d’animaux après tentative : " + zoo.getNbrAnimals());
+        }
+    }
+
+    public static void main(String[] args) {
         // ---- Base zoo / animaux "terrestres" (Prosits précédents) ----
         Animal lion = new Animal("Felidae", "Simba", 5, true);
         Zoo myZoo   = new Zoo("myZoo", "Tunis");
@@ -18,12 +34,12 @@ public class Main {
         System.out.println(myZoo.toString());
         System.out.println(lion);
 
-        // ---- Instruction 10 : test de capacité (27 ajouts → 25 OK, 2 refus) ----
+        // ---- Instruction 10 (anciens tests) : maintenant on gère par exceptions
+        //    Capacité du Zoo fixée à 3 dans Zoo.java → au-delà, ZooFullException
         for (int i = 1; i <= 27; i++) {
             String animalName = "Animal" + i;
             Animal a = new Animal("Fam" + i, animalName, i, true);
-            boolean okAdd = myZoo.addAnimal(a);
-            System.out.println("Ajout " + animalName + " -> " + okAdd);
+            addAndReport(myZoo, a);
         }
 
         // ---- Instruction 11 : afficher les animaux présents ----
@@ -33,8 +49,8 @@ public class Main {
         Animal simba = new Animal("Felidae", "Simba", 5, true);
         System.out.println("Index de Simba avant ajout : " + myZoo.searchAnimal(simba));
 
-        boolean okAddSimba = myZoo.addAnimal(simba);
-        System.out.println("Ajout Simba -> " + okAddSimba);
+        // Ajout de Simba (géré par exceptions)
+        addAndReport(myZoo, simba);
 
         System.out.println("Index de Simba après ajout : " + myZoo.searchAnimal(simba));
 
@@ -44,32 +60,22 @@ public class Main {
         // ---- Instruction 12 : unicité + capacité ----
         Animal a1 = new Animal("Felidae", "Nala", 4, true);
         Animal a2 = new Animal("Felidae", "Nala", 6, true); // doublon (même nom)
-
-        System.out.println("Ajout Nala #1 -> " + myZoo.addAnimal(a1));
-        System.out.println("Ajout Nala #2 (doublon) -> " + myZoo.addAnimal(a2));
+        addAndReport(myZoo, a1);
+        addAndReport(myZoo, a2);
 
         // Re-tests d’ajouts (le zoo est sûrement plein ici)
         for (int i = 1; i <= 5; i++) {
             Animal ai = new Animal("FamX" + i, "AX" + i, 2 + i, true);
-            boolean okAddMore = myZoo.addAnimal(ai);
-            System.out.println("Ajout " + ai.getName() + " (après remplissage) -> " + okAddMore);
+            addAndReport(myZoo, ai);
         }
 
+        // Suppressions/consultations (inchangé)
         Animal toRemove = new Animal("Felidae", "Nala", 0, true);
         System.out.println("Suppression de 'Nala' -> " + myZoo.removeAnimal(toRemove));
         System.out.println("Recherche de 'Nala' après suppression -> index = " + myZoo.searchAnimal(toRemove));
         Animal unknown = new Animal("UnknownFam", "Inconnu", 1, true);
         System.out.println("Suppression d'un animal absent -> " + myZoo.removeAnimal(unknown));
         System.out.println("Zoo plein ? " + myZoo.isZooFull());
-
-        // ---- Instruction 16 : comparer deux zoos ----
-        Zoo zoo1 = new Zoo("Zoo1", "Tunis");
-        Zoo zoo2 = new Zoo("Zoo2", "Sfax");
-        zoo1.addAnimal(new Animal("Felidae", "Simba", 5, true));
-        zoo1.addAnimal(new Animal("Equidae", "Marty", 4, true));
-        zoo2.addAnimal(new Animal("Accipitridae", "Aquila", 3, false));
-        Zoo bigger = Zoo.comparerZoo(zoo1, zoo2);
-        System.out.println("Le zoo avec le plus d'animaux est : " + bigger.getName());
 
         // ================= Prosit 6 : Aquatiques (Instructions 25 → 30) =================
 
@@ -112,5 +118,10 @@ public class Main {
 
         // Instr. 30 : stats par type
         myZoo.displayNumberOfAquaticsByType();
+
+        // ================= Prosit 7 : Test âge négatif (Instruction 34) =================
+        // Doit lever InvalidAgeException et être géré ici (sans arrêter le programme)
+        Animal negAge = new Animal("Testidae", "Minus", -2, true);
+        addAndReport(myZoo, negAge);
     }
 }

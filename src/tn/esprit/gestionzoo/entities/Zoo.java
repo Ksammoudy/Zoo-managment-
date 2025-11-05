@@ -1,8 +1,12 @@
 package tn.esprit.gestionzoo.entities;
 
+import tn.esprit.gestionzoo.exceptions.InvalidAgeException;
+import tn.esprit.gestionzoo.exceptions.ZooFullException;
+
 public class Zoo {
-    // ====== Partie "zoo d'animaux" (Prosits précédents) ======
-    public static final int NBR_CAGES = 25;
+    // ====== Partie "zoo d'animaux" (Prosit 7) ======
+    // Capacité réduite à 3 comme demandé
+    public static final int NBR_CAGES = 3;
 
     private final Animal[] animals = new Animal[NBR_CAGES];
     private String name;
@@ -29,29 +33,46 @@ public class Zoo {
     public void setCity(String city) { this.city = (city == null) ? "" : city.trim(); }
 
     public int getAnimalCount() { return animalCount; }
+    // Alias pour compatibilité avec certains Main : getNbrAnimals()
+    public int getNbrAnimals() { return animalCount; }
+
     public Animal[] getAnimals() { return animals; }
 
-    // Métier (animaux)
-    public boolean addAnimal(Animal animal) {
-        if (animal == null) return false;
-        if (isZooFull()) return false;
-
-        // refuser doublon par nom
+    // ====== Métier (animaux) ======
+    // Prosit 7 : addAnimal -> void + exceptions
+    public void addAnimal(Animal animal) throws ZooFullException, InvalidAgeException {
+        if (animal == null) {
+            // Rien à faire si null (aucune exception demandée pour ce cas)
+            return;
+        }
+        // Instruction 34 : interdire âge négatif
+        if (animal.getAge() < 0) {
+            throw new InvalidAgeException(
+                    "Âge négatif interdit pour l’animal: " + animal.getName()
+            );
+        }
+        // Instruction 32/33 : si plein -> lever ZooFullException
+        if (isZooFull()) {
+            throw new ZooFullException("Zoo plein: capacité maximale (" + NBR_CAGES + ") atteinte.");
+        }
+        // Anti-doublon par NOM (même nom => on n’ajoute pas, pas d’exception demandée)
         for (Animal a : animals) {
             if (a != null && a.getName() != null
                     && a.getName().equalsIgnoreCase(animal.getName())) {
-                return false;
+                // Doublon : on ignore simplement
+                return;
             }
         }
-        // ajouter à la première case libre
+        // Ajouter à la première case libre
         for (int i = 0; i < animals.length; i++) {
             if (animals[i] == null) {
                 animals[i] = animal;
                 animalCount++;
-                return true;
+                return;
             }
         }
-        return false;
+        // Sécurité (normalement jamais atteint car isZooFull() couvre le cas)
+        throw new ZooFullException("Aucune case libre trouvée malgré le contrôle de capacité.");
     }
 
     public void displayZoo() {
