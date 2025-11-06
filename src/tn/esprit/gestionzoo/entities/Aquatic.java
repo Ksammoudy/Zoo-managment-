@@ -2,7 +2,7 @@ package tn.esprit.gestionzoo.entities;
 
 import java.util.Objects;
 
-public abstract class Aquatic extends Animal {
+public abstract class Aquatic extends Animal implements Carnivore<Food> {
     protected String habitat; // mer, océan, bassin...
 
     public Aquatic() {
@@ -19,6 +19,16 @@ public abstract class Aquatic extends Animal {
 
     // Instruction 28: obliger la redéfinition dans les sous-classes
     public abstract void swim();
+
+    // Prosit 8 — Carnivore<Food>
+    @Override
+    public void eatMeat(Food meat) {
+        if (meat == Food.MEAT || meat == Food.BOTH) {
+            System.out.println(getName() + " (Aquatic) mange de la viande.");
+        } else {
+            System.out.println(getName() + " (Aquatic) ne mange pas de plantes.");
+        }
+    }
 
     // Instruction 31: même nom + même âge + même habitat
     @Override
