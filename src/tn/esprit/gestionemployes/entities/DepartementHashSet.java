@@ -39,9 +39,9 @@ public class DepartementHashSet implements IDepartement<Departement> {
     @Override
     public void supprimerDepartement(Departement d) {
         if (departements.remove(d)) {
-            System.out.println("🗑️ Département supprimé : " + d.getNom());
+            System.out.println("️ Département supprimé : " + d.getNom());
         } else {
-            System.out.println("❌ Département introuvable !");
+            System.out.println("  Département introuvable !");
         }
     }
 
